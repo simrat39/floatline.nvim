@@ -7,7 +7,7 @@ I tested vim-airline,lightline.vim,lualine.nvim
 
 Credit to [@shadmansaleh](https://github.com/shadmansaleh/) for an ffi code
 
-you should carrefully to use it. It use and ffi code to call from lua to c
+you should carefully to use it. It use ffi code to call from lua to c
 
 ## Installation
 
@@ -46,5 +46,5 @@ statusline plugin.
 
 If you want to looking for a statusline support to hide it.
 
-You can try
+You can try for better experiences
 * [windline.nvim](https://github.com/windwp/windline.nvim)

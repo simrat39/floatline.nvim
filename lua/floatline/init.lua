@@ -34,6 +34,7 @@ local create_floating_win = function()
         height = 1,
         col = 0,
         row = vim.o.lines - vim.o.cmdheight - 1,
+        focusable = false,
         style = 'minimal',
     }
     local status_winid = api.nvim_open_win(status_bufnr, true, content_opts)
@@ -44,6 +45,7 @@ local create_floating_win = function()
     api.nvim_win_set_option(status_winid, 'relativenumber', false)
     api.nvim_win_set_option(status_winid, 'cursorline', false)
     api.nvim_win_set_option(status_winid, 'signcolumn', 'no')
+    api.nvim_win_set_option(status_winid, 'winhighlight', 'Search:None')
     state.floatline.winid = status_winid
     state.floatline.bufnr = status_bufnr
     api.nvim_win_set_cursor(status_winid, { 1, 1 })
@@ -73,6 +75,47 @@ end
 M.floatline_on_tabenter = function()
     close_float_win()
     create_floating_win()
+end
+
+local function get_layout_height(tree_layout, height)
+    if tree_layout[1] == 'row' then
+        --if it is row we only get the first window
+        return get_layout_height(tree_layout[2][1], height)
+    elseif tree_layout[1] == 'col' then
+        --need to sum all window layout
+        for _, value in pairs(tree_layout[2]) do
+            -- +1 because the size for statusline
+            height = get_layout_height(value, height + 1)
+        end
+        return height - 1
+    elseif tree_layout[1] == 'leaf' then
+        -- get window height
+        if api.nvim_win_is_valid(tree_layout[2]) then
+            return api.nvim_win_get_height(tree_layout[2]) + height
+        end
+        return height
+    end
+end
+
+M.floatline_on_resize = function()
+    if api.nvim_win_is_valid(state.floatline.winid) then
+        local layout = vim.fn.winlayout(api.nvim_get_current_tabpage())
+        local tabline = vim.o.showtabline > 0 and 1 or 0
+        if vim.o.showtabline == 1 then
+            tabline = #vim.api.nvim_list_tabpages() > 1 and 1 or 0
+        end
+        local height = get_layout_height(layout, tabline)
+            or vim.o.lines - vim.o.cmdheight - 1
+        api.nvim_win_set_config(state.floatline.winid, {
+            relative = 'editor',
+            width = vim.o.columns,
+            height = 1,
+            col = 0,
+            row = height,
+            focusable = false,
+            style = 'minimal',
+        })
+    end
 end
 
 M.update_status = function()
