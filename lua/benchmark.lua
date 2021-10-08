@@ -29,7 +29,7 @@ end
 
 local check = pcall(require, 'specs.' .. status_name)
 if not check then
-    log.error("Can't load statusline :" .. status_name)
+    log("Error Can't load statusline :" .. status_name)
     return
 end
 
