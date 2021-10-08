@@ -1,0 +1,57 @@
+name: Benchmark
+
+on: [push, pull_request]
+
+jobs:
+  x64-ubuntu:
+    name: X64-ubuntu
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-20.04
+            url: https://github.com/neovim/neovim/releases/download/v0.5.0/nvim-linux64.tar.gz
+            manager: sudo apt-get
+    steps:
+      - uses: actions/checkout@v2
+      - run: date +%F > todays-date
+      - name: Restore from todays cache
+        uses: actions/cache@v2
+        with:
+          path: _neovim
+          key: ${{ runner.os }}-${{ matrix.url }}-${{ hashFiles('todays-date') }}
+      - name: Prepare
+        run: |
+          ${{ matrix.manager }} update
+          ${{ matrix.manager }} install ${{ matrix.packages }}
+          test -d _neovim || {
+            mkdir -p _neovim
+            curl -sL ${{ matrix.url }} | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
+          }
+          ln -s $(pwd) ~/benchmark
+          scripts/install.sh
+      - name: Run benchmark
+        run: |
+          export PATH="${PWD}/_neovim/bin:${PATH}"
+          export VIM="${PWD}/_neovim/share/nvim/runtime"
+          cd ~/benchmark
+          scripts/ci.sh
+      - name: Setup git
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git checkout -b benchmark-bot
+      - name: update result
+        run: |
+          if ! [[ -z $(git status -s) ]]; then
+            git add README.md
+            git commit -m "update README.md"
+            git push --force https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY} benchmark-bot
+            gh pr create --fill --base ${GITHUB_REF#refs/heads/} --head benchmark-bot || true
+          fi

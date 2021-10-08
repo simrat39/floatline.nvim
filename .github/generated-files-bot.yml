@@ -1,0 +1,6 @@
+generatedFiles:
+  - path: "README"
+    message: "benchmark generated.  Make changes there instead."
+ignoreAuthors:
+  - 'github-actions[bot]'
+  - 'windwp'
