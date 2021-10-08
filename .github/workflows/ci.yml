@@ -1,6 +1,9 @@
 name: Benchmark
 
-on: [push, pull_request]
+on:
+ push:
+    branches:
+      - benchmark
 
 jobs:
   x64-ubuntu:
