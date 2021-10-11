@@ -12,3 +12,6 @@ git clone --depth 1 https://github.com/shadmansaleh/lualine.nvim
 git clone --depth 1 https://github.com/windwp/windline.nvim
 git clone --depth 1 https://github.com/famiu/feline.nvim
 git clone --depth 1 https://github.com/NTBBloodbath/galaxyline.nvim
+git clone --depth 1 https://github.com/echasnovski/mini.nvim
+git clone --depth 1 https://github.com/tamton-aquib/staline.nvim
+git clone --depth 1 https://github.com/adelarsq/neoline.vim
