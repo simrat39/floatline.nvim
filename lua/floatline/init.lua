@@ -1,6 +1,5 @@
 local api = vim.api
 local namespace = api.nvim_create_namespace('floatline.floatline_status')
-local ffi_convert = require('floatline.ffi_convert')
 
 local M = _G.FloatLine or {
     state = {},
@@ -9,6 +8,8 @@ _G.FloatLine = M
 
 local default_config = {
     interval = 300,
+    blend = 0,
+    status = nil,
 }
 local state = M.state
 local close_float_win = function()
@@ -43,6 +44,7 @@ local create_floating_win = function()
     api.nvim_win_set_option(status_winid, 'wrap', false)
     api.nvim_win_set_option(status_winid, 'number', false)
     api.nvim_win_set_option(status_winid, 'relativenumber', false)
+    api.nvim_win_set_option(status_winid, 'winblend', M.config.blend)
     api.nvim_win_set_option(status_winid, 'cursorline', false)
     api.nvim_win_set_option(status_winid, 'signcolumn', 'no')
     api.nvim_win_set_option(status_winid, 'winhighlight', 'Search:None')
@@ -118,6 +120,18 @@ M.floatline_on_resize = function()
     end
 end
 
+local function get_status(winid)
+    if M.config.status then
+        local st = M.config.status(winid)
+        if st then return st end
+    end
+    local ok, status_opt = pcall(api.nvim_win_get_option, winid, 'statusline')
+    if not ok then
+        status_opt = vim.o.statusline
+    end
+    return status_opt
+end
+
 M.update_status = function()
     if
         not state.floatline.bufnr or not api.nvim_win_is_valid(state.floatline.winid)
@@ -130,21 +144,37 @@ M.update_status = function()
     if not api.nvim_win_is_valid(winid) then
         return
     end
-    local ok, status_opt = pcall(api.nvim_win_get_option, winid, 'statusline')
-    if not ok then
-        status_opt = vim.o.statusline
-    end
-    local status_str, status_hl = ffi_convert.get_stl_format(status_opt)
+    local status = get_status(winid)
+    local status_data = api.nvim_eval_statusline(status, {
+        winid = winid,
+        maxwidth = vim.o.columns,
+        highlights = true,
+        use_tabline = false,
+    })
     state.last_bufnr = bufnr
     state.last_winid = winid
-    vim.api.nvim_buf_set_lines(state.floatline.bufnr, 0, 1, false, { status_str })
+    vim.api.nvim_buf_set_lines(
+        state.floatline.bufnr,
+        0,
+        1,
+        false,
+        { status_data.str }
+    )
     state.text_groups = {}
-    for _, hl in ipairs(status_hl) do
-        if hl.len > 0 then
-            table.insert(state.text_groups, {
-                hl = hl.hl,
-                range = { hl.start, hl.start + hl.len },
-            })
+    local previous_group = {}
+    local str_length = #status_data.str
+    if status_data.highlights then
+        for _, hl in pairs(status_data.highlights) do
+            if hl.start then
+                if previous_group.range then
+                    previous_group.range[2] = hl.start
+                end
+                previous_group = {
+                    hl = hl.group,
+                    range = { hl.start, str_length},
+                }
+                table.insert(state.text_groups, previous_group)
+            end
         end
     end
 end
@@ -232,4 +262,5 @@ M.stop_runner = function()
         state.timer = nil
     end
 end
+
 return M
