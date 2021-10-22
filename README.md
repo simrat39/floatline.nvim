@@ -1,13 +1,15 @@
 # Benchmark for some statusline
- 
    Many lua statuslines say they are fast. Is it true?
 
+   It benchmark a redraw time. Every time you type a key or run vim.cmd the
+   statusline need to draw again 5 or 6 time.
 
+   Benchmark result is updated by github CI bot. It run 10.000 time
 
 
 
 # Result
-``` log
+
 ``` log
 Update by bot:
 Sun Oct 17 12:00:14 UTC 2021
