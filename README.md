@@ -8,58 +8,56 @@
 
 
 
-# Result
-
 ``` log
 Update by bot:
-Sun Oct 17 12:00:14 UTC 2021
+Fri Oct 22 09:38:14 UTC 2021
 
-Time airline: 6.052192768
+Time airline: 6.109339798
 Text:
  NORMAL  lua/benchmark.lua                                       1% ㏑:1/55☰℅:1 
 
 
-Time lightline: 0.532830304
+Time lightline: 0.531383366
 Text:
  NORMAL  benchmark.lua                       unix | utf-8 | no ft    1%    1:1  
 
 
-Time galaxyline: 2.462681179
+Time galaxyline: 2.512254318
 Text:
 ▊   1.4k  benchmark.lua  1 : 1   Top                               benchmark▊
 
 
-Time windline: 0.465606156
+Time windline: 0.453795648
 Text:
  NORMAL  benchmark.lua 1.38k                             l/n   1:1    1% 
 
 
-Time lualine: 0.610481914
+Time lualine: 0.609165322
 Text:
- NORMAL  benchmark.lua                                utf-8 | unix  Top    1:1  
+ NORMAL  benchmark.lua                               utf-8 | unix    1%    1:1  
 
 
-Time feline: 1.521700016
+Time feline: 1.517078479
 Text:
 ▊     benchmark.lua  1.38k    1:0                                   Top ▁▁
 
 
-Time staline: 0.605599148
+Time staline: 0.602431735
 Text:
                        benchmark.lua                    [1/55] :1 並1%  
 
 
-Time neoline: 0.990382572
+Time neoline: 0.969327847
 Text:
 NORMAL                                                    🧊   utf-8  1:1
 
 
-Time mini: 0.377406743
+Time mini: 0.34808037
 Text:
- N WR  lua/benchmark.lua                                             1|55│ 1|40 
+ N  lua/benchmark.lua                                                1|55│ 1|40 
 
 
-Time empty: 0.06287089
+Time empty: 0.061663292
 Text:
  ~/work/floatline.nvim/floatline.nvim/lua/benchmark.lua  utf-8       C:1 L:1 Top
 
