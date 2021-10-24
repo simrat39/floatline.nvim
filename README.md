@@ -1,12 +1,13 @@
 # Benchmark for some statusline
    Many lua statuslines say they are fast. Is it true?
 
-   It benchmark a redraw time. Every time you type a key or run vim.cmd the
-   statusline need to draw again 5 or 6 time.
+   It benchmark a redraw time.
+   Every time you type a key or run vim.cmd the statusline need to draw again a few time.
+   On insert mode with lsp server it redraw statusline a lot more than 20 time with 1 keystroke.
 
    Benchmark result is updated by github CI bot. It run 10.000 time
 
-
+##Result
 
 ``` log
 Update by bot:
