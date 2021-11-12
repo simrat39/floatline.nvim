@@ -9,6 +9,7 @@ _G.FloatLine = M
 local default_config = {
 	interval = 300,
 	blend = 0,
+	bg = "Pmenu",
 	status = nil,
 }
 local state = M.state
@@ -43,7 +44,7 @@ local create_floating_win = function()
 	api.nvim_win_set_option(status_winid, "winblend", M.config.blend)
 	api.nvim_win_set_option(status_winid, "cursorline", false)
 	api.nvim_win_set_option(status_winid, "signcolumn", "no")
-	api.nvim_win_set_option(status_winid, "winhighlight", "Search:None")
+	api.nvim_win_set_option(status_winid, "winhighlight", "Search:None,Normal:" .. M.config.bg)
 	state.floatline.winid = status_winid
 	state.floatline.bufnr = status_bufnr
 	api.nvim_win_set_cursor(status_winid, { 1, 1 })
